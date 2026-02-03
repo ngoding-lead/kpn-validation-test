@@ -2,9 +2,9 @@
 /**
  * KPN Validation Test API
  * Domain: kpn-validation-test.ilmuprogram.app
- * Method: POST with Bearer Token Authentication
+ * Method: POST (save data) / GET /data (list files)
  * 
- * Menyimpan body POST ke folder inbound dalam format CSV
+ * Menyimpan body POST ke folder inbound dalam format JSON, XML, dan CSV
  */
 
 require_once __DIR__ . '/config.php';
@@ -12,12 +12,97 @@ require_once __DIR__ . '/config.php';
 // Set headers
 header('Content-Type: application/json');
 
-// Hanya terima method POST
+// Parse URI
+$requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+$path = parse_url($requestUri, PHP_URL_PATH);
+$query = [];
+parse_str(parse_url($requestUri, PHP_URL_QUERY) ?? '', $query);
+
+// GET /data - List all files
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($path === '/data' || $path === '/data/')) {
+    // Check if file parameter is provided
+    if (isset($query['file'])) {
+        $filename = basename($query['file']);
+        $filepath = INBOUND_DIR . '/' . $filename;
+        
+        if (!file_exists($filepath) || $filename === '.gitkeep') {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'message' => 'File not found']);
+            exit;
+        }
+        
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        $contentTypes = [
+            'json' => 'application/json',
+            'xml' => 'application/xml',
+            'csv' => 'text/csv'
+        ];
+        
+        header('Content-Type: ' . ($contentTypes[$ext] ?? 'text/plain'));
+        header('Content-Disposition: inline; filename="' . $filename . '"');
+        readfile($filepath);
+        exit;
+    }
+    
+    // List all files
+    $files = [];
+    $inboundFiles = glob(INBOUND_DIR . '/*.*');
+    
+    foreach ($inboundFiles as $file) {
+        $filename = basename($file);
+        if ($filename === '.gitkeep') continue;
+        
+        $files[] = [
+            'filename' => $filename,
+            'size' => filesize($file),
+            'modified' => date('Y-m-d H:i:s', filemtime($file)),
+            'url' => '/data?file=' . urlencode($filename)
+        ];
+    }
+    
+    // Sort by modified desc
+    usort($files, function($a, $b) {
+        return strtotime($b['modified']) - strtotime($a['modified']);
+    });
+    
+    echo json_encode([
+        'success' => true,
+        'total' => count($files),
+        'files' => $files
+    ], JSON_PRETTY_PRINT);
+    exit;
+}
+
+// GET /data/{filename} - Download/view file (fallback)
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && preg_match('#^/data/(.+)$#', $path, $matches)) {
+    $filename = basename($matches[1]);
+    $filepath = INBOUND_DIR . '/' . $filename;
+    
+    if (!file_exists($filepath) || $filename === '.gitkeep') {
+        http_response_code(404);
+        echo json_encode(['success' => false, 'message' => 'File not found']);
+        exit;
+    }
+    
+    $ext = pathinfo($filename, PATHINFO_EXTENSION);
+    $contentTypes = [
+        'json' => 'application/json',
+        'xml' => 'application/xml',
+        'csv' => 'text/csv'
+    ];
+    
+    header('Content-Type: ' . ($contentTypes[$ext] ?? 'text/plain'));
+    header('Content-Disposition: inline; filename="' . $filename . '"');
+    readfile($filepath);
+    exit;
+}
+
+// Hanya terima method POST untuk save data
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode([
         'success' => false,
-        'message' => 'Method not allowed. Only POST is accepted.',
+        'message' => 'Method not allowed. Use POST to save data or GET /data to list files.',
         'timestamp' => date('Y-m-d H:i:s')
     ]);
     exit;
@@ -74,19 +159,56 @@ if (empty($postData) && empty($rawBody)) {
 // Generate nama file dengan timestamp
 $timestamp = date('Y-m-d_H-i-s');
 $uniqueId = uniqid();
-$filename = "inbound_{$timestamp}_{$uniqueId}.csv";
-$filepath = INBOUND_DIR . '/' . $filename;
+$baseFilename = "inbound_{$timestamp}_{$uniqueId}";
 
-// Siapkan data untuk CSV
-$csvData = [];
-
-// Tambahkan metadata
+// Siapkan metadata
 $metadata = [
     'received_at' => date('Y-m-d H:i:s'),
     'remote_ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
     'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
     'content_type' => $_SERVER['CONTENT_TYPE'] ?? 'unknown'
 ];
+
+// 1. Simpan raw body sebagai JSON (original)
+$jsonFilename = $baseFilename . '.json';
+$jsonFilepath = INBOUND_DIR . '/' . $jsonFilename;
+$jsonContent = json_encode([
+    '_metadata' => $metadata,
+    'data' => $postData
+], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+file_put_contents($jsonFilepath, $jsonContent);
+
+// 2. Simpan sebagai XML
+$xmlFilename = $baseFilename . '.xml';
+$xmlFilepath = INBOUND_DIR . '/' . $xmlFilename;
+
+function arrayToXml($data, &$xml, $parentKey = '') {
+    foreach ($data as $key => $value) {
+        // Handle numeric keys
+        $elementName = is_numeric($key) ? 'item_' . $key : $key;
+        // Clean element name (remove invalid XML chars)
+        $elementName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $elementName);
+        
+        if (is_array($value)) {
+            $child = $xml->addChild($elementName);
+            arrayToXml($value, $child, $elementName);
+        } else {
+            $xml->addChild($elementName, htmlspecialchars((string)$value));
+        }
+    }
+}
+
+$xmlData = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><inbound></inbound>');
+arrayToXml(['_metadata' => $metadata, 'data' => $postData], $xmlData);
+$dom = new DOMDocument('1.0', 'UTF-8');
+$dom->preserveWhiteSpace = false;
+$dom->formatOutput = true;
+$dom->loadXML($xmlData->asXML());
+file_put_contents($xmlFilepath, $dom->saveXML());
+
+// 3. Simpan sebagai CSV (flattened)
+$csvFilename = $baseFilename . '.csv';
+$csvFilepath = INBOUND_DIR . '/' . $csvFilename;
 
 // Flatten nested array untuk CSV
 function flattenArray($array, $prefix = '') {
@@ -112,7 +234,7 @@ $flattenedData = array_merge(
 
 // Tulis ke CSV
 try {
-    $fp = fopen($filepath, 'w');
+    $fp = fopen($csvFilepath, 'w');
     
     if ($fp === false) {
         throw new Exception('Failed to create CSV file.');
@@ -130,7 +252,11 @@ try {
     echo json_encode([
         'success' => true,
         'message' => 'Data saved successfully.',
-        'filename' => $filename,
+        'files' => [
+            'json' => $jsonFilename,
+            'xml' => $xmlFilename,
+            'csv' => $csvFilename
+        ],
         'timestamp' => date('Y-m-d H:i:s'),
         'data_received' => $postData
     ]);

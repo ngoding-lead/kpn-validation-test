@@ -1,5 +1,7 @@
-# Ignore inbound CSV files (keep folder structure)
+# Ignore inbound files (keep folder structure)
 inbound/*.csv
+inbound/*.json
+inbound/*.xml
 
 # Environment files
 .env
