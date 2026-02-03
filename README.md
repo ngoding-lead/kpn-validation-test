@@ -10,11 +10,12 @@ API untuk menerima dan menyimpan data POST dalam format CSV.
 
 ## 🔐 Authentication
 
-Gunakan header `Authorization` dengan Bearer token:
+Gunakan **Basic Authentication**:
 
-```
-Authorization: Bearer kpn-validation-secret-token-2026
-```
+| Field | Value |
+|-------|-------|
+| Username | `yossy` |
+| Password | `yossy` |
 
 ## 📤 Request
 
@@ -22,7 +23,7 @@ Authorization: Bearer kpn-validation-secret-token-2026
 
 | Header | Value |
 |--------|-------|
-| `Authorization` | `Bearer kpn-validation-secret-token-2026` |
+| `Authorization` | `Basic eW9zc3k6eW9zc3k=` |
 | `Content-Type` | `application/json` |
 
 ### Body (JSON)
@@ -71,7 +72,7 @@ Authorization: Bearer kpn-validation-secret-token-2026
 
 ```bash
 curl -X POST https://kpn-validation-test.ilmuprogram.app \
-  -H "Authorization: Bearer kpn-validation-secret-token-2026" \
+  -u yossy:yossy \
   -H "Content-Type: application/json" \
   -d '{"name":"John Doe","email":"john@example.com","phone":"08123456789"}'
 ```
@@ -85,8 +86,8 @@ curl_setopt_array($ch, [
     CURLOPT_URL => 'https://kpn-validation-test.ilmuprogram.app',
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_POST => true,
+    CURLOPT_USERPWD => 'yossy:yossy',
     CURLOPT_HTTPHEADER => [
-        'Authorization: Bearer kpn-validation-secret-token-2026',
         'Content-Type: application/json'
     ],
     CURLOPT_POSTFIELDS => json_encode([
@@ -105,7 +106,7 @@ echo $response;
 fetch('https://kpn-validation-test.ilmuprogram.app', {
   method: 'POST',
   headers: {
-    'Authorization': 'Bearer kpn-validation-secret-token-2026',
+    'Authorization': 'Basic ' + btoa('yossy:yossy'),
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -121,13 +122,11 @@ fetch('https://kpn-validation-test.ilmuprogram.app', {
 
 ```python
 import requests
+from requests.auth import HTTPBasicAuth
 
 response = requests.post(
     'https://kpn-validation-test.ilmuprogram.app',
-    headers={
-        'Authorization': 'Bearer kpn-validation-secret-token-2026',
-        'Content-Type': 'application/json'
-    },
+    auth=HTTPBasicAuth('yossy', 'yossy'),
     json={
         'name': 'John Doe',
         'email': 'john@example.com'

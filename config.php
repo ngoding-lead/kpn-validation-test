@@ -3,8 +3,9 @@
  * Configuration file for KPN Validation Test API
  */
 
-// Bearer Token untuk autentikasi
-define('BEARER_TOKEN', 'kpn-validation-secret-token-2026');
+// Basic Auth credentials
+define('AUTH_USERNAME', 'yossy');
+define('AUTH_PASSWORD', 'yossy');
 
 // Direktori untuk menyimpan file inbound
 define('INBOUND_DIR', __DIR__ . '/inbound');

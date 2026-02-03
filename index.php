@@ -23,37 +23,26 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Validasi Bearer Token
-$authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['HTTP_X_AUTHORIZATION'] ?? '';
+// Validasi Basic Auth
+$username = $_SERVER['PHP_AUTH_USER'] ?? '';
+$password = $_SERVER['PHP_AUTH_PW'] ?? '';
 
-if (empty($authHeader)) {
+if (empty($username) || empty($password)) {
     http_response_code(401);
+    header('WWW-Authenticate: Basic realm="KPN Validation API"');
     echo json_encode([
         'success' => false,
-        'message' => 'Authorization header is required.',
+        'message' => 'Authentication required.',
         'timestamp' => date('Y-m-d H:i:s')
     ]);
     exit;
 }
 
-// Extract token dari header
-if (!preg_match('/Bearer\s+(.+)/i', $authHeader, $matches)) {
-    http_response_code(401);
-    echo json_encode([
-        'success' => false,
-        'message' => 'Invalid authorization format. Use: Bearer <token>',
-        'timestamp' => date('Y-m-d H:i:s')
-    ]);
-    exit;
-}
-
-$token = trim($matches[1]);
-
-if ($token !== BEARER_TOKEN) {
+if ($username !== AUTH_USERNAME || $password !== AUTH_PASSWORD) {
     http_response_code(403);
     echo json_encode([
         'success' => false,
-        'message' => 'Invalid token.',
+        'message' => 'Invalid credentials.',
         'timestamp' => date('Y-m-d H:i:s')
     ]);
     exit;
