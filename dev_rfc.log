@@ -1,0 +1,133 @@
+
+**** Log file opened at 2026-02-03 22:27:01.779624 UTC+07:00 (GMT), Encoding UTF-8
+NW RFC Library: SDK variant, Release 750 Patch Level 18
+Compilation date          : Nov 29 2025 00:51:01
+CPIC library              : 754.2025.08.18 version 3
+NI library                : 40
+Kernel Release            : 754 Patch Level 627
+Current working directory : /home/clientsystem/Documents/Github/kpn-validation-test
+Program                   : php
+Process ID                : 05931
+User                      : clientsystem
+Hardware                  : AMD/Intel x86_64 with Linux x86_64
+Operating_system          : Linux 6.14.0-37-generic
+Hostname                  : clientsystem
+IP address                : 127.0.1.1
+IPv6 address              : 
+NI IPv6 status            : inactive
+Global trace level        : 0 : None
+
+2026-02-03 22:27:01.779653 [128964396980608] >> Info entry
+	Did not find config file /home/clientsystem/Documents/Github/kpn-validation-test/sapnwrfc.ini.
+
+**** Log file opened at 2026-02-03 22:27:08.690248 UTC+07:00 (GMT), Encoding UTF-8
+NW RFC Library: SDK variant, Release 750 Patch Level 18
+Compilation date          : Nov 29 2025 00:51:01
+CPIC library              : 754.2025.08.18 version 3
+NI library                : 40
+Kernel Release            : 754 Patch Level 627
+Current working directory : /home/clientsystem/Documents/Github/kpn-validation-test
+Program                   : php
+Process ID                : 05964
+User                      : clientsystem
+Hardware                  : AMD/Intel x86_64 with Linux x86_64
+Operating_system          : Linux 6.14.0-37-generic
+Hostname                  : clientsystem
+IP address                : 127.0.1.1
+IPv6 address              : 
+NI IPv6 status            : inactive
+Global trace level        : 0 : None
+
+2026-02-03 22:27:08.690158 [138453349439872] >> Info entry
+	throwRfcErrorMsg called at:
+	libsapnwrfc.so[S](RfcTrace::printStackTrace()+0x66)[0x7dec28cedd80,0xedd80]
+
+	libsapnwrfc.so[S](RfcConnectionBase::throwRfcErrorMsg(int)+0x34)[0x7dec28d53c90,0x153c90]
+
+	libsapnwrfc.so[S](RfcConnectionBase::rfcReceive(RfcFunction*)+0x54)[0x7dec28d5a6b8,0x15a6b8]
+
+	libsapnwrfc.so[S](RfcFunction::rfcDeserialize(RfcConnectionBase*, RfcIOStream*)+0x4d)[0x7dec28cadea7,0xadea7]
+
+	libsapnwrfc.so[S](SyncContext::executeContext(RfcConnectionBase*, RfcFunction*, _RFCID) const+0xec)[0x7dec28d5e204,0x15e204]
+
+	libsapnwrfc.so[S](ContextBase::rfcCallReceive(RfcConnectionBase*, RfcFunction*, _RFCID)+0x130)[0x7dec28d5e5f6,0x15e5f6]
+
+	libsapnwrfc.so[S](Repository::queryFunctionMetaData(RfcConnectionBase*, std::__cxx11::basic_string<char16_t, std::char_traits<char16_t>, std::allocator<char16_t> > const&)+0x210)[0x7dec28cd00fe,0xd00fe]
+
+	libsapnwrfc.so[S](RfcGetFunctionDesc+0x1f7)[0x7dec28c8e749,0x8e749]
+
+	sapnwrfc.so[F](zim_Connection_getFunction+0xab)[0x7dec29c80f9b,0x8f9b]
+
+	php[T](execute_ex+0x89df)[0x6513df26bb2f,0x6513df26bb2f]
+
+	php[T](zend_execute+0x141)[0x6513df26d581,0x6513df26d581]
+
+	php[T](zend_eval_stringl+0x121)[0x6513df1e5021,0x6513df1e5021]
+
+	php[T](zend_eval_stringl_ex+0x15)[0x6513df1e5225,0x6513df1e5225]
+
+	php[T][0x6513df2e6a08,0x6513df2e6a08]
+
+	php[T][0x6513df00c7e1,0x6513df00c7e1]
+
+	libc.so.6[T][0x7dec2e22a1ca,0x2a1ca]
+
+	libc.so.6[S](__libc_start_main+0x8b)[0x7dec2e22a28b,0x2a28b]
+
+
+
+**** Log file opened at 2026-02-03 22:27:22.867504 UTC+07:00 (GMT), Encoding UTF-8
+NW RFC Library: SDK variant, Release 750 Patch Level 18
+Compilation date          : Nov 29 2025 00:51:01
+CPIC library              : 754.2025.08.18 version 3
+NI library                : 40
+Kernel Release            : 754 Patch Level 627
+Current working directory : /home/clientsystem/Documents/Github/kpn-validation-test
+Program                   : php
+Process ID                : 06024
+User                      : clientsystem
+Hardware                  : AMD/Intel x86_64 with Linux x86_64
+Operating_system          : Linux 6.14.0-37-generic
+Hostname                  : clientsystem
+IP address                : 127.0.1.1
+IPv6 address              : 
+NI IPv6 status            : inactive
+Global trace level        : 0 : None
+
+2026-02-03 22:27:22.867447 [123305836280192] >> Info entry
+	throwRfcErrorMsg called at:
+	libsapnwrfc.so[S](RfcTrace::printStackTrace()+0x66)[0x70255aeedd80,0xedd80]
+
+	libsapnwrfc.so[S](RfcConnectionBase::throwRfcErrorMsg(int)+0x34)[0x70255af53c90,0x153c90]
+
+	libsapnwrfc.so[S](RfcConnectionBase::rfcReceive(RfcFunction*)+0x54)[0x70255af5a6b8,0x15a6b8]
+
+	libsapnwrfc.so[S](RfcFunction::rfcDeserialize(RfcConnectionBase*, RfcIOStream*)+0x4d)[0x70255aeadea7,0xadea7]
+
+	libsapnwrfc.so[S](SyncContext::executeContext(RfcConnectionBase*, RfcFunction*, _RFCID) const+0xec)[0x70255af5e204,0x15e204]
+
+	libsapnwrfc.so[S](ContextBase::rfcCallReceive(RfcConnectionBase*, RfcFunction*, _RFCID)+0x130)[0x70255af5e5f6,0x15e5f6]
+
+	libsapnwrfc.so[S](Repository::queryFunctionMetaData(RfcConnectionBase*, std::__cxx11::basic_string<char16_t, std::char_traits<char16_t>, std::allocator<char16_t> > const&)+0x210)[0x70255aed00fe,0xd00fe]
+
+	libsapnwrfc.so[S](RfcGetFunctionDesc+0x1f7)[0x70255ae8e749,0x8e749]
+
+	sapnwrfc.so[F](zim_Connection_getFunction+0xab)[0x70255bf4af9b,0x8f9b]
+
+	php[T](execute_ex+0x89df)[0x5c8150c99b2f,0x5c8150c99b2f]
+
+	php[T](zend_execute+0x141)[0x5c8150c9b581,0x5c8150c9b581]
+
+	php[T](zend_eval_stringl+0x121)[0x5c8150c13021,0x5c8150c13021]
+
+	php[T](zend_eval_stringl_ex+0x15)[0x5c8150c13225,0x5c8150c13225]
+
+	php[T][0x5c8150d14a08,0x5c8150d14a08]
+
+	php[T][0x5c8150a3a7e1,0x5c8150a3a7e1]
+
+	libc.so.6[T][0x70256062a1ca,0x2a1ca]
+
+	libc.so.6[S](__libc_start_main+0x8b)[0x70256062a28b,0x2a28b]
+
+

@@ -1,0 +1,33 @@
+       column_name        |          data_type          
+--------------------------+-----------------------------
+ id                       | integer
+ file_id                  | character varying
+ received_at              | timestamp without time zone
+ remote_ip                | character varying
+ user_agent               | text
+ requisition_id           | integer
+ created_at               | timestamp without time zone
+ updated_at               | timestamp without time zone
+ status                   | character varying
+ submitted_at             | timestamp without time zone
+ ship_to_attention        | character varying
+ exported                 | boolean
+ total                    | numeric
+ total_with_estimated_tax | numeric
+ estimated_tax_amount     | numeric
+ rejected                 | boolean
+ currency_code            | character varying
+ requested_by_id          | integer
+ requested_by_login       | character varying
+ ship_to_address_id       | integer
+ ship_to_address_name     | character varying
+ ship_to_address_city     | character varying
+ ship_to_address_street1  | text
+ buyer_note               | text
+ justification            | text
+ json_filename            | character varying
+ xml_filename             | character varying
+ csv_filename             | character varying
+ db_created_at            | timestamp without time zone
+(29 rows)
+
