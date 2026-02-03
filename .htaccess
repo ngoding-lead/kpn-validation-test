@@ -1,0 +1,28 @@
+# Enable rewrite engine
+RewriteEngine On
+
+# Redirect all requests to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Security: Deny access to sensitive files
+<FilesMatch "^(config\.php|\.htaccess)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Security: Deny access to inbound folder via web
+<IfModule mod_rewrite.c>
+    RewriteRule ^inbound/ - [F,L]
+</IfModule>
+
+# Enable Authorization header passthrough
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
+# CORS headers (optional)
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "POST, OPTIONS"
+    Header set Access-Control-Allow-Headers "Authorization, Content-Type"
+</IfModule>

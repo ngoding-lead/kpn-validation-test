@@ -1,0 +1,13 @@
+# Ignore inbound CSV files (keep folder structure)
+inbound/*.csv
+
+# Environment files
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
