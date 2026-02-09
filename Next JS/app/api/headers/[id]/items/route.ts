@@ -1,10 +1,3 @@
-/**
- * @file    GET /api/headers/:id/items — Line items for a header
- * @module  api/headers/[id]/items
- * @author  Wahyu Amaldi — Technical Lead, KPMG
- * @version 1.0.0
- */
-
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 

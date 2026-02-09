@@ -1,66 +1,85 @@
-# 📦 KPN Validation Test — Next.js Version
+# KPN Validation Test — Next.js
 
-> **Next.js 16 + TypeScript + PostgreSQL** implementation of the KPN Validation Test API.  
-> Mirrors the original PHP version with identical functionality and shared database.
+Next.js implementation of the KPN Validation Test API. Built with TypeScript and PostgreSQL.
 
-## 🌐 Live URL
+This is the Next.js counterpart of the original PHP version — both share the same database.
 
-| Version | URL |
-|---------|-----|
-| **Next.js** | [https://kpn-validation-test-nextjs.ilmuprogram.app](https://kpn-validation-test-nextjs.ilmuprogram.app) |
-| PHP (original) | [https://kpn-validation-test.ilmuprogram.app](https://kpn-validation-test.ilmuprogram.app) |
 
----
+## Setup
 
-## 🚀 Features
-
-- **POST API** — Receive inbound data with Basic Auth, save to JSON/XML/CSV files + PostgreSQL
-- **HTML Data Viewer** — Browse all records, items, and approval chains via HTML pages
-- **JSON REST API** — Programmatic access to all data
-- **File Storage** — Each submission saved as `.json`, `.xml`, and `.csv`
-- **Database** — PostgreSQL with 4 tables (headers, items, approvals, rfc_history)
-- **SAP RFC Logging** — RFC call history recorded (SAP NWRFC not available in Node.js)
-
----
-
-## 📋 API Endpoints
-
-### 🔐 Inbound (Requires Basic Auth)
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/inbound` | Save inbound data |
-| `GET` | `/api/inbound` | API info & endpoints list |
-
-**Authentication:** Basic Auth  
-- Username: `yossy`  
-- Password: `yossy`
-
-### 📊 Data Viewer (HTML — No Auth)
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/data` | Main data table (HTML) |
-| `GET` | `/data?items={id}` | View line items for a header |
-| `GET` | `/data?approvals={id}` | View approval chain |
-| `GET` | `/data?file={filename}` | Download/view saved file |
-
-### 🔌 JSON REST API (No Auth)
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/headers` | List all inbound headers |
-| `GET` | `/api/headers/{id}` | Get header with items, approvals, RFC history |
-| `GET` | `/api/headers/{id}/items` | Get items for a header |
-| `GET` | `/api/headers/{id}/approvals` | Get approvals for a header |
-
----
-
-## 🧪 Test API Call
+**Requirements:** Node.js 18+, PostgreSQL
 
 ```bash
-# POST inbound data
-curl -X POST https://kpn-validation-test-nextjs.ilmuprogram.app/api/inbound \
+npm install
+cp .env.example .env.local   # edit sesuai environment
+npm run dev                   # development (port 3001)
+```
+
+Production:
+```bash
+npm run build
+npm run start
+```
+
+
+## Environment Variables
+
+Buat file `.env.local` berdasarkan `.env.example`:
+
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=kpn_validation_test
+DB_USER=postgres
+DB_PASS=your_password
+
+AUTH_USERNAME=yossy
+AUTH_PASSWORD=yossy
+
+SAP_ASHOST=your_sap_host
+SAP_SYSNR=10
+SAP_CLIENT=777
+SAP_USER=your_sap_user
+SAP_PASS=your_sap_pass
+
+PORT=3001
+```
+
+
+## API Endpoints
+
+### Inbound (POST, requires Basic Auth)
+
+| Method | Endpoint | Keterangan |
+|--------|----------|------------|
+| POST | `/api/inbound` | Simpan data inbound |
+| GET | `/api/inbound` | Info API |
+
+Auth: Basic Auth (credential dari env)
+
+### Data Viewer (HTML)
+
+| Method | Endpoint | Keterangan |
+|--------|----------|------------|
+| GET | `/data` | Tabel data utama |
+| GET | `/data?items={id}` | Detail line items |
+| GET | `/data?approvals={id}` | Approval chain |
+| GET | `/data?file={filename}` | Download file |
+
+### REST API (JSON, tanpa auth)
+
+| Method | Endpoint | Keterangan |
+|--------|----------|------------|
+| GET | `/api/headers` | List semua header |
+| GET | `/api/headers/{id}` | Detail header + items + approvals |
+| GET | `/api/headers/{id}/items` | Items saja |
+| GET | `/api/headers/{id}/approvals` | Approvals saja |
+
+
+## Contoh Request
+
+```bash
+curl -X POST http://localhost:3001/api/inbound \
   -u yossy:yossy \
   -H "Content-Type: application/json" \
   -d '{
@@ -91,228 +110,76 @@ curl -X POST https://kpn-validation-test-nextjs.ilmuprogram.app/api/inbound \
       {"id": 7969, "position": 1, "status": "pending_approval", "approval-chain-id": 33}
     ]
   }'
-
-# Get all headers (JSON API)
-curl -s https://kpn-validation-test-nextjs.ilmuprogram.app/api/headers | python3 -m json.tool
-
-# Get header detail
-curl -s https://kpn-validation-test-nextjs.ilmuprogram.app/api/headers/1 | python3 -m json.tool
 ```
 
----
 
-## 🗄️ Database
+## Database
 
-Uses the same PostgreSQL database as the PHP version: `kpn_validation_test`
+PostgreSQL database: `kpn_validation_test`
 
-### Tables
-
-| Table | Description |
-|-------|-------------|
-| `inbound_headers` | Header records (requisition info, addresses, totals) |
-| `inbound_items` | Line items (materials, quantities, suppliers) |
-| `inbound_approvals` | Approval chain steps |
+| Table | Keterangan |
+|-------|------------|
+| `inbound_headers` | Header records (requisition, address, total) |
+| `inbound_items` | Line items (material, qty, supplier) |
+| `inbound_approvals` | Approval chain |
 | `rfc_call_history` | SAP RFC call log |
 
-### Connection
+
+## Alur Proses (POST /api/inbound)
+
+1. Validasi Basic Auth
+2. Parse JSON body
+3. Simpan ke file `inbound/` (JSON, XML, CSV)
+4. Insert ke PostgreSQL (headers → items → approvals)
+5. Log RFC history (ZKPN_TEST)
+6. Return response JSON
+
+
+## Struktur Folder
 
 ```
-Host: localhost
-Port: 5432
-Database: kpn_validation_test
-User: postgres
+app/
+  layout.tsx
+  page.tsx
+  globals.css
+  data/route.ts             → HTML data viewer
+  api/
+    inbound/route.ts        → POST handler
+    headers/
+      route.ts              → GET list
+      [id]/
+        route.ts            → GET detail
+        items/route.ts      → GET items
+        approvals/route.ts  → GET approvals
+lib/
+  db.ts                     → PostgreSQL pool
+  auth.ts                   → Basic Auth
+  save-to-db.ts             → Insert logic
+  utils.ts                  → XML/CSV helpers
+inbound/                    → File storage
 ```
+
+
+## Perbedaan dengan Versi PHP
+
+| | PHP | Next.js |
+|-|-----|---------|
+| POST endpoint | `POST /` | `POST /api/inbound` |
+| Runtime | PHP 8.x | Node.js + Next.js 16 |
+| Port | 8080 | 3001 |
+| SAP RFC | SAPNWRFC ext | Log only |
+| Database | sama | sama |
+
+
+## Tech Stack
+
+- Next.js 16 (App Router)
+- TypeScript
+- Tailwind CSS
+- PostgreSQL (pg driver)
+- fast-xml-parser
+
 
 ---
 
-## 🔄 Flow Diagram
-
-```
-┌──────────────────────────────────────────────────────┐
-│              POST /api/inbound                        │
-│    https://kpn-validation-test-nextjs.ilmuprogram.app │
-└──────────────────────────────────────────────────────┘
-                        │
-                        ▼
-┌──────────────────────────────────────────────────────┐
-│              1. BASIC AUTH                            │
-│           yossy / yossy                              │
-│           ❌ 401/403 if failed                       │
-└──────────────────────────────────────────────────────┘
-                        │
-                        ▼
-┌──────────────────────────────────────────────────────┐
-│           2. PARSE JSON BODY                         │
-└──────────────────────────────────────────────────────┘
-                        │
-                        ▼
-┌──────────────────────────────────────────────────────┐
-│        3. SAVE TO FILES (inbound/)                   │
-│    • JSON, XML, CSV                                  │
-└──────────────────────────────────────────────────────┘
-                        │
-                        ▼
-┌──────────────────────────────────────────────────────┐
-│        4. SAVE TO POSTGRESQL                         │
-│    inbound_headers → inbound_items                   │
-│                    → inbound_approvals               │
-└──────────────────────────────────────────────────────┘
-                        │
-                        ▼
-┌──────────────────────────────────────────────────────┐
-│        5. LOG RFC HISTORY                            │
-│    (ZKPN_TEST recorded in rfc_call_history)          │
-└──────────────────────────────────────────────────────┘
-                        │
-                        ▼
-┌──────────────────────────────────────────────────────┐
-│        6. RETURN JSON RESPONSE                       │
-│    { success, database_id, files, timestamp }        │
-└──────────────────────────────────────────────────────┘
-```
-
----
-
-## 📁 Project Structure
-
-```
-Next JS/
-├── app/
-│   ├── layout.tsx              # Root layout
-│   ├── page.tsx                # Landing page (/)
-│   ├── globals.css             # Tailwind CSS
-│   ├── data/
-│   │   └── route.ts            # GET /data — HTML data viewer
-│   └── api/
-│       ├── inbound/
-│       │   └── route.ts        # POST /api/inbound — Save data
-│       └── headers/
-│           ├── route.ts        # GET /api/headers — List all
-│           └── [id]/
-│               ├── route.ts    # GET /api/headers/:id — Detail
-│               ├── items/
-│               │   └── route.ts    # GET /api/headers/:id/items
-│               └── approvals/
-│                   └── route.ts    # GET /api/headers/:id/approvals
-├── lib/
-│   ├── db.ts                   # PostgreSQL connection pool
-│   ├── auth.ts                 # Basic Auth verification
-│   ├── save-to-db.ts           # Database insert logic
-│   └── utils.ts                # XML, CSV, date helpers
-├── inbound/                    # Saved files directory
-├── .env.local                  # Environment variables
-├── next.config.ts              # Next.js config
-├── package.json                # Dependencies & scripts
-├── tsconfig.json               # TypeScript config
-└── README.md                   # This file
-```
-
----
-
-## ⚙️ Setup & Run
-
-### Prerequisites
-
-- **Node.js** 18+ 
-- **PostgreSQL** with `kpn_validation_test` database
-
-### Install
-
-```bash
-cd "Next JS"
-npm install
-```
-
-### Development
-
-```bash
-npm run dev
-# → http://localhost:3001
-```
-
-### Production
-
-```bash
-npm run build
-npm run start
-# → http://localhost:3001
-```
-
----
-
-## 🔧 Configuration
-
-Environment variables in `.env.local`:
-
-```env
-# PostgreSQL
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=kpn_validation_test
-DB_USER=postgres
-DB_PASS=********
-
-# Basic Auth
-AUTH_USERNAME=yossy
-AUTH_PASSWORD=yossy
-
-# SAP RFC (logged only)
-SAP_ASHOST=192.168.1.103
-SAP_SYSNR=10
-SAP_CLIENT=777
-SAP_USER=wahyu.amaldi
-
-# Server
-PORT=3001
-```
-
----
-
-## 🌍 Cloudflare Tunnel
-
-| Setting | Value |
-|---------|-------|
-| Hostname | `kpn-validation-test-nextjs.ilmuprogram.app` |
-| Service | `http://localhost:3001` |
-| Tunnel | `client-management` (e0043a2e) |
-
----
-
-## 📝 Differences from PHP Version
-
-| Feature | PHP | Next.js |
-|---------|-----|---------|
-| **POST endpoint** | `POST /` | `POST /api/inbound` |
-| **Runtime** | PHP 8.x + Apache/built-in server | Node.js + Next.js 16 |
-| **Port** | 8080 | 3001 |
-| **SAP RFC** | Real SAPNWRFC extension | Logged only (no Node.js NWRFC) |
-| **Database** | Same (`kpn_validation_test`) | Same (`kpn_validation_test`) |
-| **Data viewer** | Same HTML at `/data` | Same HTML at `/data` |
-| **Styling** | Blue (#007bff) | Next.js Blue (#0070f3) |
-
----
-
-## 📌 Tech Stack
-
-- **Next.js 16** — React framework with App Router
-- **TypeScript** — Type-safe code
-- **Tailwind CSS** — Landing page styling
-- **PostgreSQL** — via `pg` driver
-- **fast-xml-parser** — JSON to XML conversion
-- **Cloudflare Tunnel** — Public HTTPS access
-
----
-
-## 👤 Author
-
-| Field | Detail |
-|-------|--------|
-| **Developer** | Wahyu Amaldi |
-| **Role** | Technical Lead |
-| **Organization** | KPMG |
-| **Project** | KPN Validation Test — Next.js Implementation |
-
----
-
-*Last Updated: 2026-02-09*  
-*Developed by Wahyu Amaldi — Technical Lead, KPMG*
+Wahyu Amaldi — Technical Lead, KPMG

@@ -1,10 +1,3 @@
-/**
- * @file    Database connection pool (PostgreSQL)
- * @module  lib/db
- * @author  Wahyu Amaldi — Technical Lead, KPMG
- * @version 1.0.0
- */
-
 import { Pool, PoolClient } from 'pg';
 
 const pool = new Pool({
@@ -12,7 +5,7 @@ const pool = new Pool({
   port: parseInt(process.env.DB_PORT || '5432'),
   database: process.env.DB_NAME || 'kpn_validation_test',
   user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASS || 'Pas671_ok',
+  password: process.env.DB_PASS,
   max: 10,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 5000,

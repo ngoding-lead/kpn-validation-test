@@ -1,10 +1,3 @@
-/**
- * @file    GET /api/headers/:id/approvals — Approval chain for a header
- * @module  api/headers/[id]/approvals
- * @author  Wahyu Amaldi — Technical Lead, KPMG
- * @version 1.0.0
- */
-
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 

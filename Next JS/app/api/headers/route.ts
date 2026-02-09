@@ -1,10 +1,3 @@
-/**
- * @file    GET /api/headers — JSON REST API for header listing
- * @module  api/headers
- * @author  Wahyu Amaldi — Technical Lead, KPMG
- * @version 1.0.0
- */
-
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 
