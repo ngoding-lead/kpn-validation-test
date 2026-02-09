@@ -3,6 +3,15 @@ inbound/*.csv
 inbound/*.json
 inbound/*.xml
 
+# Next.js
+Next JS/node_modules/
+Next JS/.next/
+Next JS/.env.local
+Next JS/inbound/*.csv
+Next JS/inbound/*.json
+Next JS/inbound/*.xml
+nextjs
+
 # Environment files
 .env
 

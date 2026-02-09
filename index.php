@@ -16,24 +16,8 @@ $path = parse_url($requestUri, PHP_URL_PATH);
 $query = [];
 parse_str(parse_url($requestUri, PHP_URL_QUERY) ?? '', $query);
 
-// GET /data - Show HTML table from PostgreSQL
+// GET /data - Show HTML table from PostgreSQL (No auth required)
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($path === '/data' || $path === '/data/')) {
-    // Require Basic Auth for /data route
-    $username = $_SERVER['PHP_AUTH_USER'] ?? '';
-    $password = $_SERVER['PHP_AUTH_PW'] ?? '';
-    
-    if (empty($username) || empty($password) || $username !== AUTH_USERNAME || $password !== AUTH_PASSWORD) {
-        http_response_code(401);
-        header('WWW-Authenticate: Basic realm="KPN Validation Data"');
-        header('Content-Type: application/json');
-        echo json_encode([
-            'success' => false,
-            'message' => 'Authentication required.',
-            'timestamp' => date('Y-m-d H:i:s')
-        ]);
-        exit;
-    }
-    
     // Check if file parameter is provided - return raw file
     if (isset($query['file'])) {
         header('Content-Type: application/json');
