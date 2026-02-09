@@ -1,3 +1,10 @@
+/**
+ * @file    Database insert logic (headers, items, approvals, RFC history)
+ * @module  lib/save-to-db
+ * @author  Wahyu Amaldi — Technical Lead, KPMG
+ * @version 1.0.0
+ */
+
 import { getClient } from './db';
 import { parseTimestamp } from './utils';
 

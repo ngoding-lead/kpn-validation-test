@@ -1,3 +1,10 @@
+/**
+ * @file    Landing page component
+ * @module  app/page
+ * @author  Wahyu Amaldi — Technical Lead, KPMG
+ * @version 1.0.0
+ */
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center p-8">
@@ -57,6 +64,7 @@ export default function Home() {
         <div className="text-center text-gray-500 text-sm">
           <p>Running on port 3001 • Domain: kpn-validation-test-nextjs.ilmuprogram.app</p>
           <p className="mt-1">Powered by Next.js + Tailwind CSS + PostgreSQL</p>
+          <p className="mt-2 text-gray-600 text-xs">Developed by Wahyu Amaldi — Technical Lead, KPMG</p>
         </div>
       </div>
     </div>

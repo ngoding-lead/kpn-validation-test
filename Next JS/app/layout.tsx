@@ -1,3 +1,10 @@
+/**
+ * @file    Root layout component
+ * @module  app/layout
+ * @author  Wahyu Amaldi — Technical Lead, KPMG
+ * @version 1.0.0
+ */
+
 import type { Metadata } from "next";
 import "./globals.css";
 

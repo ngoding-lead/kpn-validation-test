@@ -1,3 +1,10 @@
+/**
+ * @file    Utility functions (XML, CSV, date formatting)
+ * @module  lib/utils
+ * @author  Wahyu Amaldi — Technical Lead, KPMG
+ * @version 1.0.0
+ */
+
 import { XMLBuilder } from 'fast-xml-parser';
 
 /**

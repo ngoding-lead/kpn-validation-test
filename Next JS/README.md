@@ -303,4 +303,16 @@ PORT=3001
 
 ---
 
-*Last Updated: 2026-02-09*
+## 👤 Author
+
+| Field | Detail |
+|-------|--------|
+| **Developer** | Wahyu Amaldi |
+| **Role** | Technical Lead |
+| **Organization** | KPMG |
+| **Project** | KPN Validation Test — Next.js Implementation |
+
+---
+
+*Last Updated: 2026-02-09*  
+*Developed by Wahyu Amaldi — Technical Lead, KPMG*

@@ -1,3 +1,10 @@
+/**
+ * @file    GET /api/headers/:id — Header detail with related data
+ * @module  api/headers/[id]
+ * @author  Wahyu Amaldi — Technical Lead, KPMG
+ * @version 1.0.0
+ */
+
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 

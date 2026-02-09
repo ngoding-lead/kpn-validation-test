@@ -1,3 +1,10 @@
+/**
+ * @file    POST /api/inbound — Receive and store inbound data
+ * @module  api/inbound
+ * @author  Wahyu Amaldi — Technical Lead, KPMG
+ * @version 1.0.0
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyBasicAuth } from '@/lib/auth';
 import { saveToDatabase } from '@/lib/save-to-db';

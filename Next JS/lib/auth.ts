@@ -1,3 +1,10 @@
+/**
+ * @file    Basic Auth verification middleware
+ * @module  lib/auth
+ * @author  Wahyu Amaldi — Technical Lead, KPMG
+ * @version 1.0.0
+ */
+
 import { NextRequest } from 'next/server';
 
 const AUTH_USERNAME = process.env.AUTH_USERNAME || 'yossy';

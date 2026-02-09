@@ -1,6 +1,8 @@
 {
   "name": "kpn-validation-test-nextjs",
   "version": "1.0.0",
+  "description": "KPN Validation Test — Next.js 16 + TypeScript + PostgreSQL API for inbound data processing",
+  "author": "Wahyu Amaldi <wahyu.amaldi@kpmg.co.id>",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",

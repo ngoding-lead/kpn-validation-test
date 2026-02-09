@@ -1,3 +1,10 @@
+/**
+ * @file    Database connection pool (PostgreSQL)
+ * @module  lib/db
+ * @author  Wahyu Amaldi — Technical Lead, KPMG
+ * @version 1.0.0
+ */
+
 import { Pool, PoolClient } from 'pg';
 
 const pool = new Pool({

@@ -1,3 +1,10 @@
+/**
+ * @file    GET /data — HTML data viewer (records, items, approvals)
+ * @module  data
+ * @author  Wahyu Amaldi — Technical Lead, KPMG
+ * @version 1.0.0
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { readFileSync, existsSync } from 'fs';
